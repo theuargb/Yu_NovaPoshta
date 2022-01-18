@@ -14,7 +14,7 @@ class WarehouseRepository implements \Yu\NovaPoshta\Api\WarehouseRepositoryInter
     private $warehouseFactory;
 
     /**
-     * @var \Yu\NovaPoshta\Model\ResourceModel\Warehouse 
+     * @var \Yu\NovaPoshta\Model\ResourceModel\Warehouse
      */
     private $warehouseResourceModel;
 
@@ -24,12 +24,12 @@ class WarehouseRepository implements \Yu\NovaPoshta\Api\WarehouseRepositoryInter
     private $warehouseCollectionFactory;
 
     /**
-     * @var \Yu\NovaPoshta\Api\Data\WarehouseSearchResultsInterfaceFactory 
+     * @var \Yu\NovaPoshta\Api\Data\WarehouseSearchResultsInterfaceFactory
      */
     private $warehouseSearchResultFactory;
 
     /**
-     * @var \Magento\Framework\Api\SearchCriteriaBuilder 
+     * @var \Magento\Framework\Api\SearchCriteriaBuilder
      */
     private $searchCriteriaBuilder;
 
@@ -44,7 +44,7 @@ class WarehouseRepository implements \Yu\NovaPoshta\Api\WarehouseRepositoryInter
     private $scopeConfig;
 
     /**
-     * @var sting 
+     * @var sting
      */
     private $lang;
 
@@ -133,8 +133,8 @@ class WarehouseRepository implements \Yu\NovaPoshta\Api\WarehouseRepositoryInter
         foreach ($result->getItems() as $item)
         {
             $data[] = [
-                'value' => $item->getData('warehouse_id'),
-                'label' => $item->getData('name_' . $this->lang),
+                'id' => $item->getData('warehouse_id'),
+                'text' => $item->getData('name_' . $this->lang),
             ];
         }
         return json_encode($data);
