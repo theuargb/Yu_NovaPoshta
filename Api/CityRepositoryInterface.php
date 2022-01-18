@@ -2,16 +2,21 @@
 
 namespace Yu\NovaPoshta\Api;
 
+use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Yu\NovaPoshta\Api\Data\CityInterface;
+use Yu\NovaPoshta\Api\Data\CitySearchResultsInterface;
 
 interface CityRepositoryInterface
 {
     /**
      * Save city.
      *
-     * @param \Yu\NovaPoshta\Api\Data\CityInterface $city
-     * @return \Yu\NovaPoshta\Api\Data\CityInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @param CityInterface $city
+     *
+     * @return CityInterface
+     * @throws LocalizedException
      */
     public function save(CityInterface $city);
 
@@ -19,8 +24,9 @@ interface CityRepositoryInterface
      * Retrieve city.
      *
      * @param int $cityId
-     * @return \Yu\NovaPoshta\Api\Data\CityInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     *
+     * @return CityInterface
+     * @throws LocalizedException
      */
     public function getById($cityId);
 
@@ -28,35 +34,39 @@ interface CityRepositoryInterface
      * Retrieve city.
      *
      * @param string $ref
-     * @return \Yu\NovaPoshta\Api\Data\CityInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     *
+     * @return CityInterface
+     * @throws LocalizedException
      */
     public function getByRef($ref);
 
     /**
      * Retrieve cities matching the specified criteria.
      *
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
-     * @return \Yu\NovaPoshta\Api\Data\CitySearchResultsInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @param SearchCriteriaInterface $searchCriteria
+     *
+     * @return CitySearchResultsInterface
+     * @throws LocalizedException
      */
-    public function getList(\Magento\Framework\Api\SearchCriteriaInterface $searchCriteria);
+    public function getList(SearchCriteriaInterface $searchCriteria);
 
     /**
      * Retrieve cities matching name.
      *
      * @param string $name | null
+     *
      * @return string | null
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function getJsonByCityName(string $name = null);
 
     /**
      * Delete city.
      *
-     * @param \Yu\NovaPoshta\Api\Data\CityInterface $city
+     * @param CityInterface $city
+     *
      * @return bool true on success
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function delete(CityInterface $city);
 
@@ -64,9 +74,10 @@ interface CityRepositoryInterface
      * Delete city by ID.
      *
      * @param int $cityId
+     *
      * @return bool true on success
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws NoSuchEntityException
+     * @throws LocalizedException
      */
     public function deleteById($cityId);
 }

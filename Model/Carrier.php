@@ -2,9 +2,21 @@
 
 namespace Yu\NovaPoshta\Model;
 
+use Magento\Checkout\Model\Session;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Quote\Model\Quote\Address\RateRequest;
+use Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory;
+use Magento\Quote\Model\Quote\Address\RateResult\Method;
+use Magento\Quote\Model\Quote\Address\RateResult\MethodFactory;
 use Magento\Shipping\Model\Carrier\AbstractCarrier;
 use Magento\Shipping\Model\Carrier\CarrierInterface;
+use Magento\Shipping\Model\Rate\Result;
+use Magento\Shipping\Model\Rate\ResultFactory;
+use Magento\Shipping\Model\Tracking\Result\Status;
+use Magento\Shipping\Model\Tracking\Result\StatusFactory;
+use Magento\Store\Model\ScopeInterface;
+use Psr\Log\LoggerInterface;
+use Yu\NovaPoshta\Service\Curl;
 
 /**
  * NovaPoshta shipping model
@@ -26,27 +38,27 @@ class Carrier extends AbstractCarrier implements CarrierInterface
     protected $_isFixed = false;
 
     /**
-     * @var \Magento\Shipping\Model\Rate\ResultFactory
+     * @var ResultFactory
      */
     private $rateResultFactory;
 
     /**
-     * @var \Magento\Quote\Model\Quote\Address\RateResult\MethodFactory
+     * @var MethodFactory
      */
     private $rateMethodFactory;
 
     /**
-     * @var \Magento\Shipping\Model\Tracking\Result\StatusFactory
+     * @var StatusFactory
      */
     protected $trackResultFactory;
 
     /**
-     * @var \Yu\NovaPoshta\Service\Curl
+     * @var Curl
      */
     private $curl;
 
     /**
-     * @var \Magento\Checkout\Model\Session
+     * @var Session
      */
     private $checkoutSession;
 
@@ -56,27 +68,26 @@ class Carrier extends AbstractCarrier implements CarrierInterface
     private $cityResourceModel;
 
     /**
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory $rateErrorFactory
-     * @param \Psr\Log\LoggerInterface $logger
-     * @param \Magento\Shipping\Model\Rate\ResultFactory $rateResultFactory
-     * @param \Magento\Quote\Model\Quote\Address\RateResult\MethodFactory $rateMethodFactory
-     * @param \Magento\Shipping\Model\Tracking\Result\StatusFactory $trackResultFactory
+     * @param ScopeConfigInterface $scopeConfig
+     * @param ErrorFactory $rateErrorFactory
+     * @param LoggerInterface $logger
+     * @param ResultFactory $rateResultFactory
+     * @param MethodFactory $rateMethodFactory
+     * @param StatusFactory $trackResultFactory
      * @param array $data
      */
     public function __construct(
-            \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-            \Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory $rateErrorFactory,
-            \Psr\Log\LoggerInterface $logger,
-            \Magento\Shipping\Model\Rate\ResultFactory $rateResultFactory,
-            \Magento\Quote\Model\Quote\Address\RateResult\MethodFactory $rateMethodFactory,
-            \Magento\Shipping\Model\Tracking\Result\StatusFactory $trackResultFactory,
-            \Magento\Checkout\Model\Session $checkoutSession,
-            \Yu\NovaPoshta\Service\Curl $curl,
-            \Yu\NovaPoshta\Model\ResourceModel\City $cityResourceModel,
-            array $data = []
-    )
-    {
+        ScopeConfigInterface          $scopeConfig,
+        ErrorFactory  $rateErrorFactory,
+        LoggerInterface                                    $logger,
+        ResultFactory                  $rateResultFactory,
+        MethodFactory $rateMethodFactory,
+        StatusFactory       $trackResultFactory,
+        Session                             $checkoutSession,
+        Curl                                 $curl,
+        \Yu\NovaPoshta\Model\ResourceModel\City                     $cityResourceModel,
+        array                                                       $data = []
+    ) {
         parent::__construct($scopeConfig, $rateErrorFactory, $logger, $data);
 
         $this->rateResultFactory = $rateResultFactory;
@@ -91,7 +102,8 @@ class Carrier extends AbstractCarrier implements CarrierInterface
      * NovaPoshta Rates Collector
      *
      * @param RateRequest $request
-     * @return \Magento\Shipping\Model\Rate\Result|bool
+     *
+     * @return Result|bool
      */
     public function collectRates(RateRequest $request)
     {
@@ -105,7 +117,7 @@ class Carrier extends AbstractCarrier implements CarrierInterface
         //print_r($request->getData());die;
         if ($request->getOrigCity()) {
             $cityName = $request->getOrigCity();
-        } elseif ($request->getDestCity()) {
+        } else if ($request->getDestCity()) {
             $cityName = $request->getDestCity();
         }
 
@@ -120,28 +132,28 @@ class Carrier extends AbstractCarrier implements CarrierInterface
 
 
         $citySender = $this->_scopeConfig->getValue(
-                'carriers/novaposhta/city_sender',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            'carriers/novaposhta/city_sender',
+            ScopeInterface::SCOPE_STORE
         );
 
         $carrierTitle = $this->_scopeConfig->getValue(
-                'carriers/novaposhta/title',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            'carriers/novaposhta/title',
+            ScopeInterface::SCOPE_STORE
         );
 
         $nameWW = $this->_scopeConfig->getValue(
-                'carriers/novaposhta/name_ww',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            'carriers/novaposhta/name_ww',
+            ScopeInterface::SCOPE_STORE
         );
 
         $nameWD = $this->_scopeConfig->getValue(
-                'carriers/novaposhta/name_wd',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            'carriers/novaposhta/name_wd',
+            ScopeInterface::SCOPE_STORE
         );
 
         $allowed = $this->getAllowedMethods();
 
-        /** @var \Magento\Shipping\Model\Rate\Result $result */
+        /** @var Result $result */
         $result = $this->rateResultFactory->create();
 
 
@@ -151,18 +163,18 @@ class Carrier extends AbstractCarrier implements CarrierInterface
             $customPrice = $this->getCustomPrice('warehouse');
 
             $params = [
-                'modelName'        => 'InternetDocument',
-                'calledMethod'     => 'getDocumentPrice',
-                'apiKey'           => '',
+                'modelName' => 'InternetDocument',
+                'calledMethod' => 'getDocumentPrice',
+                'apiKey' => '',
                 'methodProperties' => [
-                    'CitySender'    => $citySender,
+                    'CitySender' => $citySender,
                     'CityRecipient' => $cityRef,
-                    'Weight'        => $request->getPackageWeight(),
-                    'ServiceType'   => 'WarehouseWarehouse',
-                    'Cost'          => $this->checkoutSession->getQuote()->getBaseSubtotal(),
-                    'CargoType'     => 'Cargo',
-                    'SeatsAmount'   => 1,
-            ]];
+                    'Weight' => $request->getPackageWeight(),
+                    'ServiceType' => 'WarehouseWarehouse',
+                    'Cost' => $this->checkoutSession->getQuote()->getBaseSubtotal(),
+                    'CargoType' => 'Cargo',
+                    'SeatsAmount' => 1,
+                ]];
 
             $price = 0;
             if ($customPrice !== null) {
@@ -171,7 +183,7 @@ class Carrier extends AbstractCarrier implements CarrierInterface
                 $price = $this->getNovaPoshtaPrice($params);
             }
 
-            /** @var \Magento\Quote\Model\Quote\Address\RateResult\Method $methodWarehouse */
+            /** @var Method $methodWarehouse */
             $methodWarehouse = $this->rateMethodFactory->create();
             $methodWarehouse->setCarrier($this->_code);
             $methodWarehouse->setCarrierTitle($carrierTitle);
@@ -189,18 +201,18 @@ class Carrier extends AbstractCarrier implements CarrierInterface
             $customPrice = $this->getCustomPrice('door');
 
             $params = [
-                'modelName'        => 'InternetDocument',
-                'calledMethod'     => 'getDocumentPrice',
-                'apiKey'           => '',
+                'modelName' => 'InternetDocument',
+                'calledMethod' => 'getDocumentPrice',
+                'apiKey' => '',
                 'methodProperties' => [
-                    'CitySender'    => $citySender,
+                    'CitySender' => $citySender,
                     'CityRecipient' => $cityRef,
-                    'Weight'        => $request->getPackageWeight(),
-                    'ServiceType'   => 'WarehouseDoors',
-                    'Cost'          => $this->checkoutSession->getQuote()->getBaseSubtotal(),
-                    'CargoType'     => 'Cargo',
-                    'SeatsAmount'   => 1,
-            ]];
+                    'Weight' => $request->getPackageWeight(),
+                    'ServiceType' => 'WarehouseDoors',
+                    'Cost' => $this->checkoutSession->getQuote()->getBaseSubtotal(),
+                    'CargoType' => 'Cargo',
+                    'SeatsAmount' => 1,
+                ]];
 
             $price = 0;
             if ($customPrice !== null) {
@@ -209,7 +221,7 @@ class Carrier extends AbstractCarrier implements CarrierInterface
                 $price = $this->getNovaPoshtaPrice($params);
             }
 
-            /** @var \Magento\Quote\Model\Quote\Address\RateResult\Method $methodDoor */
+            /** @var Method $methodDoor */
             $methodDoor = $this->rateMethodFactory->create();
             $methodDoor->setCarrier($this->_code);
             $methodDoor->setCarrierTitle($carrierTitle);
@@ -228,6 +240,7 @@ class Carrier extends AbstractCarrier implements CarrierInterface
      *
      * @param string $type
      * @param string $code
+     *
      * @return array|false
      */
     public function getCode($type, $code = '')
@@ -235,13 +248,13 @@ class Carrier extends AbstractCarrier implements CarrierInterface
         $codes = [
             'method' => [
                 self::METHOD_WAREHOUSE => __('До склада'),
-                self::METHOD_DOOR      => __('До дверей'),
+                self::METHOD_DOOR => __('До дверей'),
             ],
         ];
 
         if (!isset($codes[$type])) {
             return false;
-        } elseif ('' === $code) {
+        } else if ('' === $code) {
             return $codes[$type];
         }
 
@@ -262,10 +275,10 @@ class Carrier extends AbstractCarrier implements CarrierInterface
         $allowed = explode(',', $this->getConfigData('allowed_methods'));
         $arr = [];
         /**
-          foreach ($allowed as $_code)
-          {
-          $arr[$_code] = $this->getCode('method', $_code);
-          } */
+         * foreach ($allowed as $_code)
+         * {
+         * $arr[$_code] = $this->getCode('method', $_code);
+         * } */
         return $allowed;
     }
 
@@ -274,6 +287,7 @@ class Carrier extends AbstractCarrier implements CarrierInterface
      * $type = 'warehouse' or 'door'
      *
      * @param string $type
+     *
      * @return float|null
      */
     public function getCustomPrice($type)
@@ -281,14 +295,14 @@ class Carrier extends AbstractCarrier implements CarrierInterface
         $price = -1;
 
         /** fix price */
-        if (!empty($this->getConfigData('price_fix_'.$type))) {
-            $price = $this->getConfigData('price_fix_'.$type);
+        if (!empty($this->getConfigData('price_fix_' . $type))) {
+            $price = $this->getConfigData('price_fix_' . $type);
         }
 
         /** free amount */
-        if (!empty($this->getConfigData('amount_free_'.$type))) {
+        if (!empty($this->getConfigData('amount_free_' . $type))) {
 
-            $amountFree = (float) $this->getConfigData('amount_free_'.$type);
+            $amountFree = (float)$this->getConfigData('amount_free_' . $type);
             if ($amountFree <= $this->checkoutSession->getQuote()->getGrandTotal()) {
                 $price = 0;
             }
@@ -303,6 +317,7 @@ class Carrier extends AbstractCarrier implements CarrierInterface
 
     /**
      * @param array $params
+     *
      * @return float|null
      */
     public function getNovaPoshtaPrice($params)
@@ -334,7 +349,8 @@ class Carrier extends AbstractCarrier implements CarrierInterface
      * Get tracking information
      *
      * @param string $trackNumber
-     * @return \Magento\Shipping\Model\Tracking\Result\Status
+     *
+     * @return Status
      * @api
      */
     public function getTrackingInfo($trackNumber)

@@ -2,32 +2,37 @@
 
 namespace Yu\NovaPoshta\Plugin;
 
+use Magento\Checkout\Api\Data\PaymentDetailsInterface;
+use Magento\Checkout\Api\Data\ShippingInformationInterface;
+use Magento\Checkout\Model\ShippingInformationManagement;
+use Magento\Quote\Api\CartRepositoryInterface;
+use Magento\Quote\Model\Quote;
+
 class ShippingInformationManagementPlugin
 {
-    
+
     /**
      * Quote repository.
      *
-     * @var \Magento\Quote\Api\CartRepositoryInterface
+     * @var CartRepositoryInterface
      */
     private $quoteRepository;
 
     public function __construct(
-            \Magento\Quote\Api\CartRepositoryInterface $quoteRepository
-    )
-    {
+        CartRepositoryInterface $quoteRepository
+    ) {
         $this->quoteRepository = $quoteRepository;
     }
-    
+
     /**
-     * @param \Magento\Checkout\Model\ShippingInformationManagement $subject
+     * @param ShippingInformationManagement $subject
      * @param int $cartId
-     * @param \Magento\Checkout\Api\Data\ShippingInformationInterface $addressInformation
+     * @param ShippingInformationInterface $addressInformation
      */
     public function beforeSaveAddressInformation(
-        \Magento\Checkout\Model\ShippingInformationManagement $subject,
-        $cartId,
-        \Magento\Checkout\Api\Data\ShippingInformationInterface $addressInformation
+        ShippingInformationManagement   $subject,
+                                                                $cartId,
+        ShippingInformationInterface $addressInformation
     ) {
         $shippingAddress = $addressInformation->getShippingAddress();
         $extensionAttributes = $shippingAddress->getExtensionAttributes();
@@ -35,23 +40,23 @@ class ShippingInformationManagementPlugin
         $shippingAddress->setWarehouseNovaposhtaId($extensionAttributes->getWarehouseNovaposhtaId());
         $shippingAddress->setWarehouseNovaposhtaAddress($extensionAttributes->getWarehouseNovaposhtaAddress());
     }
-    
+
     /**
-     * 
-     * @param \Magento\Checkout\Model\ShippingInformationManagement $subject
-     * @param \Magento\Checkout\Api\Data\PaymentDetailsInterface $result
+     *
+     * @param ShippingInformationManagement $subject
+     * @param PaymentDetailsInterface $result
      * @param int $cartId
-     * @param \Magento\Checkout\Api\Data\ShippingInformationInterface $addressInformation
-     * @return \Magento\Checkout\Api\Data\PaymentDetailsInterface
+     * @param ShippingInformationInterface $addressInformation
+     *
+     * @return PaymentDetailsInterface
      */
     public function afterSaveAddressInformation(
-            \Magento\Checkout\Model\ShippingInformationManagement $subject,
-            $result,
-            $cartId,
-            \Magento\Checkout\Api\Data\ShippingInformationInterface $addressInformation
-    )
-    {
-        /** @var \Magento\Quote\Model\Quote $quote */
+        ShippingInformationManagement   $subject,
+                                                                $result,
+                                                                $cartId,
+        ShippingInformationInterface $addressInformation
+    ) {
+        /** @var Quote $quote */
         $quote = $this->quoteRepository->getActive($cartId);
         $shippingAddress = $quote->getShippingAddress();
 

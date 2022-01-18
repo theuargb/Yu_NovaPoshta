@@ -2,10 +2,12 @@
 
 namespace Yu\NovaPoshta\Model\Source;
 
+use Magento\Shipping\Model\Carrier\Source\GenericInterface;
+
 /**
  * Lang source
  */
-class Lang implements \Magento\Shipping\Model\Carrier\Source\GenericInterface
+class Lang implements GenericInterface
 {
 
     /**

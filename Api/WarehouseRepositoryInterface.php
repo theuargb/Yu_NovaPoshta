@@ -1,16 +1,22 @@
 <?php
+
 namespace Yu\NovaPoshta\Api;
 
-use \Yu\NovaPoshta\Api\Data\WarehouseInterface;
+use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Yu\NovaPoshta\Api\Data\WarehouseInterface;
+use Yu\NovaPoshta\Api\Data\WarehouseSearchResultsInterface;
 
 interface WarehouseRepositoryInterface
 {
     /**
      * Save warehouse.
      *
-     * @param \Yu\NovaPoshta\Api\Data\WarehouseInterface $warehouse
-     * @return \Yu\NovaPoshta\Api\Data\WarehouseInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @param WarehouseInterface $warehouse
+     *
+     * @return WarehouseInterface
+     * @throws LocalizedException
      */
     public function save(WarehouseInterface $warehouse);
 
@@ -18,53 +24,59 @@ interface WarehouseRepositoryInterface
      * Retrieve warehouse.
      *
      * @param int $warehouseId
-     * @return \Yu\NovaPoshta\Api\Data\WarehouseInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     *
+     * @return WarehouseInterface
+     * @throws LocalizedException
      */
     public function getById($warehouseId);
-    
+
     /**
      * Retrieve warehouse.
      *
      * @param string $cityRef
-     * @return \Yu\NovaPoshta\Api\Data\WarehouseSearchResultsInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     *
+     * @return WarehouseSearchResultsInterface
+     * @throws LocalizedException
      */
     public function getListByCityRef($cityRef);
-    
+
     /**
      * Retrieve warehouse.
      *
      * @param string $cityRef
+     *
      * @return string
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function getJsonByCityRef($cityRef);
-    
+
     /**
      * Retrieve warehouse.
      *
      * @param string $cityName
+     *
      * @return string
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function getJsonByCityName($cityName);
 
     /**
      * Retrieve warehouses matching the specified criteria.
      *
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
-     * @return \Yu\NovaPoshta\Api\Data\WarehouseSearchResultsInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @param SearchCriteriaInterface $searchCriteria
+     *
+     * @return WarehouseSearchResultsInterface
+     * @throws LocalizedException
      */
-    public function getList(\Magento\Framework\Api\SearchCriteriaInterface $searchCriteria);
+    public function getList(SearchCriteriaInterface $searchCriteria);
 
     /**
      * Delete warehouse.
      *
-     * @param \Yu\NovaPoshta\Api\Data\WarehouseInterface $warehouse
+     * @param WarehouseInterface $warehouse
+     *
      * @return bool true on success
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function delete(WarehouseInterface $warehouse);
 
@@ -72,9 +84,10 @@ interface WarehouseRepositoryInterface
      * Delete warehouse by ID.
      *
      * @param int $warehouseId
+     *
      * @return bool true on success
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws NoSuchEntityException
+     * @throws LocalizedException
      */
     public function deleteById($warehouseId);
 }

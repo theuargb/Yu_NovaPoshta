@@ -2,11 +2,21 @@
 
 namespace Yu\NovaPoshta\Model;
 
-class CityRepository implements \Yu\NovaPoshta\Api\CityRepositoryInterface
+use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
+use Yu\NovaPoshta\Api\CityRepositoryInterface;
+use Yu\NovaPoshta\Api\Data\CityInterface;
+use Yu\NovaPoshta\Api\Data\CitySearchResultsInterfaceFactory;
+use Yu\NovaPoshta\Model\ResourceModel\City\CollectionFactory;
+
+class CityRepository implements CityRepositoryInterface
 {
 
     /**
-     * @var \Yu\NovaPoshta\Model\CityFactory
+     * @var CityFactory
      */
     private $cityFactory;
 
@@ -16,27 +26,27 @@ class CityRepository implements \Yu\NovaPoshta\Api\CityRepositoryInterface
     private $cityResourceModel;
 
     /**
-     * @var \Yu\NovaPoshta\Model\ResourceModel\City\CollectionFactory
+     * @var CollectionFactory
      */
     private $cityCollectionFactory;
 
     /**
-     * @var \Yu\NovaPoshta\Api\Data\CitySearchResultsInterfaceFactory
+     * @var CitySearchResultsInterfaceFactory
      */
     private $citySearchResultFactory;
 
     /**
-     * @var \Magento\Framework\Api\SearchCriteriaBuilder
+     * @var SearchCriteriaBuilder
      */
     private $searchCriteriaBuilder;
 
     /**
-     * @var \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface
+     * @var CollectionProcessorInterface
      */
     private $collectionProcessor;
 
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var ScopeConfigInterface
      */
     private $scopeConfig;
 
@@ -46,24 +56,23 @@ class CityRepository implements \Yu\NovaPoshta\Api\CityRepositoryInterface
     private $lang;
 
     /**
-     * @param \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface $collectionProcessor
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Yu\NovaPoshta\Model\CityFactory $cityFactory
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param CollectionProcessorInterface $collectionProcessor
+     * @param ScopeConfigInterface $scopeConfig
+     * @param CityFactory $cityFactory
      * @param \Yu\NovaPoshta\Model\ResourceModel\City $cityResourceModel
-     * @param \Yu\NovaPoshta\Model\ResourceModel\City\CollectionFactory $cityCollectionFactory
-     * @param \Yu\NovaPoshta\Api\Data\CitySearchResultsInterfaceFactory $citySearchResultFactory
+     * @param CollectionFactory $cityCollectionFactory
+     * @param CitySearchResultsInterfaceFactory $citySearchResultFactory
      */
     public function __construct(
-            \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
-            \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface $collectionProcessor,
-            \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-            \Yu\NovaPoshta\Model\CityFactory $cityFactory,
-            \Yu\NovaPoshta\Model\ResourceModel\City $cityResourceModel,
-            \Yu\NovaPoshta\Model\ResourceModel\City\CollectionFactory $cityCollectionFactory,
-            \Yu\NovaPoshta\Api\Data\CitySearchResultsInterfaceFactory $citySearchResultFactory
-    )
-    {
+        SearchCriteriaBuilder                       $searchCriteriaBuilder,
+        CollectionProcessorInterface $collectionProcessor,
+        ScopeConfigInterface                 $scopeConfig,
+        CityFactory                                                        $cityFactory,
+        \Yu\NovaPoshta\Model\ResourceModel\City                            $cityResourceModel,
+        CollectionFactory                                                  $cityCollectionFactory,
+        CitySearchResultsInterfaceFactory                                  $citySearchResultFactory
+    ) {
 
         $this->cityFactory = $cityFactory;
         $this->cityResourceModel = $cityResourceModel;
@@ -73,8 +82,8 @@ class CityRepository implements \Yu\NovaPoshta\Api\CityRepositoryInterface
         $this->collectionProcessor = $collectionProcessor;
         $this->scopeConfig = $scopeConfig;
         $this->lang = $scopeConfig->getValue(
-                'carriers/novaposhta/lang',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            'carriers/novaposhta/lang',
+            ScopeInterface::SCOPE_STORE
         );
     }
 
@@ -101,7 +110,7 @@ class CityRepository implements \Yu\NovaPoshta\Api\CityRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getList(\Magento\Framework\Api\SearchCriteriaInterface $searchCriteria)
+    public function getList(SearchCriteriaInterface $searchCriteria)
     {
         $collection = $this->cityCollectionFactory->create();
 
@@ -119,21 +128,20 @@ class CityRepository implements \Yu\NovaPoshta\Api\CityRepositoryInterface
      */
     public function getJsonByCityName(string $name = null)
     {
-        $data = array();
+        $data = [];
 
         if (!empty($name) && mb_strlen($name) > 1) {
             $collection = $this->cityCollectionFactory->create();
             $collection->addFieldToFilter(
-                    ['name_ru', 'name_ua'],
-                    [
-                        ['like' => $name . '%'],
-                        ['like' => $name . '%']
-                    ]
+                ['name_ru', 'name_ua'],
+                [
+                    ['like' => $name . '%'],
+                    ['like' => $name . '%'],
+                ]
             );
-            foreach ($collection->getItems() as $item)
-            {
+            foreach ($collection->getItems() as $item) {
                 $data[] = [
-                    'id'   => $item->getData('ref'),
+                    'id' => $item->getData('ref'),
                     'text' => $item->getData('name_' . $this->lang),
                 ];
             }
@@ -145,7 +153,7 @@ class CityRepository implements \Yu\NovaPoshta\Api\CityRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function save(\Yu\NovaPoshta\Api\Data\CityInterface $city)
+    public function save(CityInterface $city)
     {
         return $this->cityResourceModel->save($city);
     }
@@ -153,7 +161,7 @@ class CityRepository implements \Yu\NovaPoshta\Api\CityRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function delete(\Yu\NovaPoshta\Api\Data\CityInterface $city)
+    public function delete(CityInterface $city)
     {
         return $this->cityResourceModel->delete($city);
     }
@@ -164,7 +172,7 @@ class CityRepository implements \Yu\NovaPoshta\Api\CityRepositoryInterface
     public function deleteById($cityId)
     {
         $city = $this->getById($cityId);
-        if(!empty($city->getId())) {
+        if (!empty($city->getId())) {
             return $this->delete($city);
         }
         return false;

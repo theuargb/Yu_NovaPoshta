@@ -1,5 +1,9 @@
 <?php
+
 namespace Yu\NovaPoshta\Service;
+
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 
 /**
  * Сервисный класс для синхронизации данных с novaposhta.ua
@@ -7,37 +11,37 @@ namespace Yu\NovaPoshta\Service;
 class Curl
 {
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var ScopeConfigInterface
      */
     private $scopeConfig;
-    
+
     /**
-     * @var \Magento\Framework\HTTP\Client\Curl 
+     * @var \Magento\Framework\HTTP\Client\Curl
      */
     private $curl;
-    
-    /** 
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+
+    /**
+     * @param ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\HTTP\Client\Curl $curl
      */
     public function __construct(
-            \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-            \Magento\Framework\HTTP\Client\Curl $curl
-            )
-    {
+        ScopeConfigInterface $scopeConfig,
+        \Magento\Framework\HTTP\Client\Curl                $curl
+    ) {
         $this->scopeConfig = $scopeConfig;
         $this->curl = $curl;
     }
-    
+
     /**
      * @param array $params
+     *
      * @return array
      */
     public function getDataImport($params)
     {
         $apiKey = $this->scopeConfig->getValue(
-                'carriers/novaposhta/api_key',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            'carriers/novaposhta/api_key',
+            ScopeInterface::SCOPE_STORE
         );
 
         $params['apiKey'] = $apiKey;

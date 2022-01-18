@@ -9,7 +9,7 @@ class Warehouse extends AbstractModel
 
     protected function _construct()
     {
-        $this->_init(\Yu\NovaPoshta\Model\ResourceModel\Warehouse::class);
+        $this->_init(ResourceModel\Warehouse::class);
     }
 
 }

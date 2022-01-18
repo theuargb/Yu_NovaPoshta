@@ -19,16 +19,17 @@ class City extends AbstractDb
     /**
      *
      * @param string $name
+     *
      * @return string
      */
     public function getRefByName($name)
     {
         $select = $this->getConnection()->select()
-                ->from(['city' => $this->getMainTable()], 'ref')
-                ->where('city.name_ru=? OR city.name_ua=?', $name)
-                ->limit(1);
+                       ->from(['city' => $this->getMainTable()], 'ref')
+                       ->where('city.name_ru=? OR city.name_ua=?', $name)
+                       ->limit(1);
         $row = $this->getConnection()->fetchRow($select);
-        if(empty($row) || empty($row['ref'])) {
+        if (empty($row) || empty($row['ref'])) {
             return '';
         }
         return $row['ref'];

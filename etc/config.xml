@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
         <carriers>
             <novaposhta>
@@ -14,7 +15,7 @@
                 <model>Yu\NovaPoshta\Model\Carrier</model>
                 <price_fix_warehouse></price_fix_warehouse>
                 <price_fix_door></price_fix_door>
-                <amount_free_warehouse></amount_free_warehouse>                
+                <amount_free_warehouse></amount_free_warehouse>
                 <amount_free_door></amount_free_door>
                 <city_fast></city_fast>
             </novaposhta>

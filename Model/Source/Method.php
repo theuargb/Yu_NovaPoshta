@@ -2,10 +2,12 @@
 
 namespace Yu\NovaPoshta\Model\Source;
 
+use Magento\Shipping\Model\Carrier\Source\GenericInterface;
+
 /**
  * Method source
  */
-class Method implements \Magento\Shipping\Model\Carrier\Source\GenericInterface
+class Method implements GenericInterface
 {
 
     /**

@@ -3,6 +3,7 @@
 namespace Yu\NovaPoshta\Model\ResourceModel\Warehouse;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+use Yu\NovaPoshta\Model\ResourceModel\Warehouse;
 
 class Collection extends AbstractCollection
 {
@@ -11,7 +12,7 @@ class Collection extends AbstractCollection
     {
         $this->_init(
             \Yu\NovaPoshta\Model\Warehouse::class,
-            \Yu\NovaPoshta\Model\ResourceModel\Warehouse::class
+            Warehouse::class
         );
     }
 

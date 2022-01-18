@@ -9,14 +9,15 @@ interface CitySearchResultsInterface extends SearchResultsInterface
     /**
      * Get cities list.
      *
-     * @return \Yu\NovaPoshta\Api\Data\CityInterface[]
+     * @return CityInterface[]
      */
     public function getItems();
 
     /**
      * Set cities list.
      *
-     * @param \Yu\NovaPoshta\Api\Data\CityInterface[] $items
+     * @param CityInterface[] $items
+     *
      * @return $this
      */
     public function setItems(array $items);

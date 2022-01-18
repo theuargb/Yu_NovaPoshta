@@ -3,39 +3,42 @@
 namespace Yu\NovaPoshta\Plugin;
 
 
-use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Webapi\Rest\Request;
+use Magento\Quote\Api\Data\AddressInterface;
+use Magento\Quote\Api\Data\ShippingMethodInterface;
+use Magento\Quote\Api\ShipmentEstimationInterface;
 
 class NovaPoshtaCheckPlugin
 {
     private $request;
 
     /**
-     * @var \Magento\Quote\Api\Data\AddressInterface
+     * @var AddressInterface
      */
     private $address;
 
     /**
      * NovaPoshtaCheckPlugin constructor.
-     * @param \Magento\Quote\Api\Data\AddressInterface $address
+     *
+     * @param AddressInterface $address
      */
     public function __construct(
-        \Magento\Framework\Webapi\Rest\Request $request,
-        \Magento\Quote\Api\Data\AddressInterface $address
-    )
-    {
+        Request   $request,
+        AddressInterface $address
+    ) {
         $this->request = $request;
         $this->address = $address;
     }
 
     public function afterEstimateByExtendedAddress(
-        \Magento\Quote\Api\ShipmentEstimationInterface $subject,
-        $result,
-        $cartId,
-        $addressId)
-    {
+        ShipmentEstimationInterface $subject,
+                                                       $result,
+                                                       $cartId,
+                                                       $addressId
+    ) {
         $novaposhtaCheck = 0;
         $methods = [];
-        /** @var \Magento\Quote\Api\Data\ShippingMethodInterface $item */
+        /** @var ShippingMethodInterface $item */
         $params = $this->request->getRequestData();
         if (isset($params['address']['custom_attributes'])) {
             foreach ($params['address']['custom_attributes'] as $param) {

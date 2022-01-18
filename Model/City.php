@@ -10,9 +10,9 @@ class City extends AbstractModel implements CityInterface
 
     protected function _construct()
     {
-        $this->_init(\Yu\NovaPoshta\Model\ResourceModel\City::class);
+        $this->_init(ResourceModel\City::class);
     }
-    
+
     /**
      * {@inheritdoc}
      */
