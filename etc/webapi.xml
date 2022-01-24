@@ -14,4 +14,10 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+    <route url="/V1/novaposhta/streets" method="GET">
+        <service class="Yu\NovaPoshta\Api\StreetRepositoryInterface" method="getJsonByCityRef"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 </routes>
