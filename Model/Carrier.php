@@ -266,7 +266,7 @@ class Carrier extends AbstractCarrier implements CarrierInterface
           {
           $arr[$_code] = $this->getCode('method', $_code);
           } */
-        return $allowed;
+        return array_reverse($allowed);
     }
 
     /**
