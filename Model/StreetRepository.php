@@ -169,7 +169,7 @@ class StreetRepository implements StreetRepositoryInterface
         foreach ($data as $_data) {
             $warehouseData[] = [
                 'id' => $_data['Ref'],
-                'text' => $_data['Description'],
+                'text' => $_data['StreetsType'] . ' ' . $_data['Description'],
             ];
         }
 
