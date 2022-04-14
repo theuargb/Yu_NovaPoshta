@@ -134,6 +134,7 @@ class WarehouseRepository implements \Yu\NovaPoshta\Api\WarehouseRepositoryInter
         {
             $data[] = [
                 'id' => $item->getData('warehouse_id'),
+                'ref' => $item->getData('ref'),
                 'text' => $item->getData('name_' . $this->lang),
             ];
         }
