@@ -4,10 +4,17 @@ type PerspectiveNovaPoshtaAddress {
     street_ref: String
 }
 
-input CartAddressInput {
+interface CartAddressInterface {
     perspective_np: PerspectiveNovaPoshtaAddress
 }
 
-# interface CartAddressInterface {
-#     perspective_np: PerspectiveNovaPoshtaAddress
-# }
+input PerspectiveNovaPoshtaAddressInput {
+    city_ref: String
+    warehouse_ref: String
+    street_ref: String
+}
+
+input CartAddressInput {
+    perspective_np: PerspectiveNovaPoshtaAddressInput
+}
+

@@ -16,9 +16,10 @@ class Lang implements \Magento\Shipping\Model\Carrier\Source\GenericInterface
     public function toOptionArray()
     {
         $options = [
-            ['value' => 'ru', 'label' => 'Русский'],
-            ['value' => 'ua', 'label' => 'Украинский'],
+            ['value' => 'ua', 'label' => 'Українська'],
+            ['value' => 'ru', 'label' => 'Російяська'],
         ];
+        
         return $options;
     }
 
