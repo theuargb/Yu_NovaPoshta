@@ -19,6 +19,10 @@
         <plugin name="novaposhta_check_plugin" type="Yu\NovaPoshta\Plugin\NovaPoshtaCheckPlugin" sortOrder="100" disabled="false"/>
     </type>
 
+    <type name="Magento\QuoteGraphQl\Model\Cart\GetShippingAddress">
+        <plugin name="novaposhta_address_plugin" type="Yu\NovaPoshta\Plugin\GetShippingAddressGraphQl" sortOrder="100" disabled="false"/>
+    </type>
+
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">
