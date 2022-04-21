@@ -1,0 +1,7 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="sales_order_address_collection_load_after">
+        <observer name="my_module_event_after_observer"
+                  instance="Yu\NovaPoshta\Observer\OrderAddressCollectionLoadAfter"/>
+    </event>
+</config>

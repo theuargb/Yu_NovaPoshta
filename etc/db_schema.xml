@@ -16,7 +16,7 @@
             <column name="city_id"/>
         </constraint>
 
-        <index referenceId="CITY_IDENTIFIER" indexType="btree">
+        <index referenceId="CITY_REF" indexType="btree">
             <column name="ref"/>
         </index>
 
@@ -26,7 +26,8 @@
         </index>
     </table>
 
-    <table name="novaposhta_warehouse" resource="default" engine="innodb" comment="For module Yu_NovaPoshta. Warehouses.">
+    <table name="novaposhta_warehouse" resource="default" engine="innodb"
+           comment="For module Yu_NovaPoshta. Warehouses.">
         <column xsi:type="int" name="warehouse_id" padding="10" unsigned="true" nullable="false" identity="true"
                 comment="Entity ID"/>
         <column xsi:type="varchar" name="ref" nullable="false" length="36" comment="Warehouse Identifier"/>
@@ -39,7 +40,7 @@
             <column name="warehouse_id"/>
         </constraint>
 
-        <index referenceId="WAREHOUSE_IDENTIFIER" indexType="btree">
+        <index referenceId="WAREHOUSE_REF" indexType="btree">
             <column name="ref"/>
             <column name="city_ref"/>
         </index>
@@ -51,7 +52,8 @@
     </table>
 
     <table name="novaposhta_street" resource="default" engine="innodb" comment="yu_novaposhta_street Table">
-        <column xsi:type="int" name="street_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity Id"/>
+        <column xsi:type="int" name="street_id" padding="10" unsigned="true" nullable="false" identity="true"
+                comment="Entity Id"/>
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="street_id"/>
         </constraint>
@@ -61,12 +63,22 @@
         <column name="name_ru" nullable="true" xsi:type="varchar" comment="name_ru" length="255"/>
         <column name="streets_type_ref" nullable="true" xsi:type="varchar" comment="streets_type_ref" length="36"/>
         <column name="streets_type" nullable="true" xsi:type="varchar" comment="streets_type" length="255"/>
+
+        <index referenceId="STREET_REF" indexType="btree">
+            <column name="ref"/>
+            <column name="city_ref"/>
+        </index>
+
+        <index referenceId="STREET_NAME" indexType="fulltext">
+            <column name="name_ua"/>
+            <column name="name_ru"/>
+        </index>
     </table>
 
     <table name="quote_address">
-        <column xsi:type="varchar" name="city_novaposhta_ref" nullable="true" length="36" comment="NovaPoshta City Ref"/>
-        <column xsi:type="int" name="warehouse_novaposhta_id" nullable="true" comment="NovaPoshta Warehouse Id"/>
-        <column xsi:type="varchar" name="warehouse_novaposhta_address" nullable="true" length="255" comment="NovaPoshta Warehouse Address"/>
+        <column xsi:type="varchar" name="novaposhta_city_ref" nullable="true" length="36"
+                comment="NovaPoshta City Ref"/>
+        <column xsi:type="varchar" name="novaposhta_warehouse_ref" nullable="true" comment="NovaPoshta Warehouse Ref"/>
+        <column xsi:type="varchar" name="novaposhta_street_ref" nullable="true" comment="NovaPoshta Street Ref"/>
     </table>
-
 </schema>

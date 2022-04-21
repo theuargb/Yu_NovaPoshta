@@ -35,7 +35,7 @@ class NovaPoshtaCheckPlugin
     {
         $novaposhtaCheck = 0;
         $methods = [];
-        /** @var \Magento\Quote\Api\Data\ShippingMethodInterface $item */
+
         $params = $this->request->getRequestData();
         if (isset($params['address']['custom_attributes'])) {
             foreach ($params['address']['custom_attributes'] as $param) {

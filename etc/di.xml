@@ -12,15 +12,17 @@
     <preference for="Yu\NovaPoshta\Api\Data\WarehouseSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
     <preference for="Yu\NovaPoshta\Api\Data\StreetSearchResultsInterface" type="Magento\Framework\Api\SearchResults"/>
 
-    <type name="Magento\Checkout\Model\ShippingInformationManagement">
-        <plugin name="novaposhta_shipping_information" type="Yu\NovaPoshta\Plugin\ShippingInformationManagementPlugin" sortOrder="1" disabled="false"/>
-    </type>
     <type name="Magento\Quote\Api\ShipmentEstimationInterface">
         <plugin name="novaposhta_check_plugin" type="Yu\NovaPoshta\Plugin\NovaPoshtaCheckPlugin" sortOrder="100" disabled="false"/>
     </type>
-
     <type name="Magento\QuoteGraphQl\Model\Cart\GetShippingAddress">
         <plugin name="novaposhta_address_plugin" type="Yu\NovaPoshta\Plugin\GetShippingAddressGraphQl" sortOrder="100" disabled="false"/>
+    </type>
+    <type name="Magento\Quote\Model\ShippingAddressManagement">
+        <plugin disabled="false"
+                name="extfields"
+                sortOrder="10"
+                type="Yu\NovaPoshta\Plugin\ShippingAddressManagementPlugin"/>
     </type>
 
     <type name="Magento\Framework\Console\CommandList">
