@@ -134,6 +134,7 @@ class CityRepository implements \Yu\NovaPoshta\Api\CityRepositoryInterface
             {
                 $data[] = [
                     'id'   => $item->getData('ref'),
+                    'ref'   => $item->getData('ref'),
                     'text' => $item->getData('name_' . $this->lang),
                 ];
             }
