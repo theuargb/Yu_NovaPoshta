@@ -25,7 +25,6 @@ class ShippingAddressManagementPlugin
             $address->setData('novaposhta_warehouse_ref', $extensionAttributes->getNovaposhtaWarehouseRef() ?? $address->getData('novaposhta_warehouse_ref'));
             $address->setData('novaposhta_street_ref', $extensionAttributes->getNovaposhtaStreetRef() ?? $address->getData('novaposhta_street_ref'));
         } catch (\Exception $e) {
-            echo '';
         }
 
         return [$cartId, $address];

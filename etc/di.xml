@@ -24,6 +24,12 @@
                 sortOrder="10"
                 type="Yu\NovaPoshta\Plugin\ShippingAddressManagementPlugin"/>
     </type>
+    <type name="Magento\Sales\Api\OrderAddressRepositoryInterface">
+        <plugin disabled="false"
+                name="extfields"
+                sortOrder="10"
+                type="Yu\NovaPoshta\Plugin\OrderAddressRepository"/>
+    </type>
 
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
